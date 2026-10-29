@@ -1,0 +1,161 @@
+<div class="architecture-styles-container">
+  <header class="page-header">
+    <h1 class="page-title">Estilos de Arquitectura en la Nube</h1>
+    <p class="page-subtitle">
+      Selecciona un estilo de arquitectura para explorar tácticas de implementación
+    </p>
+  </header>
+
+  @if (isLoading()) {
+    <div class="loading-container">
+      <mat-spinner diameter="50"></mat-spinner>
+      <p>Cargando estilos de arquitectura...</p>
+    </div>
+  } @else if (errorMessage()) {
+    <div class="error-container">
+      <mat-icon class="error-icon">error_outline</mat-icon>
+      <p>{{ errorMessage() }}</p>
+      <button mat-raised-button color="primary" (click)="loadData()">
+        <mat-icon>refresh</mat-icon>
+        Reintentar
+      </button>
+    </div>
+  } @else {
+    <section class="styles-section">
+      <h2 class="section-title">
+        <mat-icon>architecture</mat-icon>
+        Estilos de Arquitectura Disponibles
+      </h2>
+      
+      <div class="styles-grid">
+        @for (style of styles(); track style.id) {
+          <app-architecture-style-card
+            [styleData]="style"
+            [isSelected]="selectedStyle()?.id === style.id"
+            (select)="selectStyle($event)">
+          </app-architecture-style-card>
+        }
+      </div>
+    </section>
+
+    @if (selectedStyle()) {
+      <section class="tactics-section">
+        <div class="section-header">
+          <h2 class="section-title">
+            <mat-icon>settings_applications</mat-icon>
+            Tácticas Recomendadas para {{ selectedStyle()?.name }}
+          </h2>
+          <button 
+            mat-stroked-button 
+            color="warn"
+            (click)="clearSelection()"
+            class="clear-button">
+            <mat-icon>clear</mat-icon>
+            Limpiar Selección
+          </button>
+        </div>
+
+        <div class="selected-style-info">
+          <mat-card class="style-summary-card">
+            <mat-card-header>
+              <mat-card-title>{{ selectedStyle()?.name }}</mat-card-title>
+              <mat-card-subtitle>
+                Complejidad: {{ getComplexityLevel(selectedStyle()?.complexity || 'medium') }}
+              </mat-card-subtitle>
+            </mat-card-header>
+            <mat-card-content>
+              <p>{{ selectedStyle()?.description }}</p>
+              <div class="suitability-badge">
+                <span 
+                  class="suitability-label"
+                  [ngClass]="getSuitabilityClass(selectedStyle()?.isSuitableForCloud || false)">
+                  Idoneidad para Cloud: {{ cloudSuitability()(selectedStyle()!) }}
+                </span>
+              </div>
+            </mat-card-content>
+          </mat-card>
+        </div>
+
+        @if (selectedStyleTactics().length > 0) {
+          <div class="tactics-grid">
+            @for (tactic of selectedStyleTactics(); track tactic.id) {
+              <mat-card class="tactic-card" [class.applied]="isTacticApplied(tactic.id)">
+                <mat-card-header>
+                  <mat-card-title>{{ tactic.name }}</mat-card-title>
+                  <mat-card-subtitle>{{ tactic.category }}</mat-card-subtitle>
+                </mat-card-header>
+                <mat-card-content>
+                  <p class="tactic-description">{{ tactic.description }}</p>
+                  <div class="tactic-metrics">
+                    <mat-chip-set>
+                      <mat-chip>
+                        Impacto: {{ tactic.impact }}
+                      </mat-chip>
+                    </mat-chip-set>
+                  </div>
+                </mat-card-content>
+                <mat-card-actions align="end">
+                  @if (isTacticApplied(tactic.id)) {
+                    <button mat-button disabled>
+                      <mat-icon>check_circle</mat-icon>
+                      Aplicada
+                    </button>
+                  } @else {
+                    <button 
+                      mat-raised-button 
+                      color="primary"
+                      (click)="applyTactic(tactic)">
+                      <mat-icon>add</mat-icon>
+                      Aplicar
+                    </button>
+                  }
+                </mat-card-actions>
+              </mat-card>
+            }
+          </div>
+        } @else {
+          <div class="no-tactics-message">
+            <mat-icon>info_outline</mat-icon>
+            <p>No hay tácticas específicas recomendadas para este estilo de arquitectura.</p>
+          </div>
+        }
+      </section>
+    } @else {
+      <section class="selection-prompt">
+        <mat-card>
+          <mat-card-content>
+            <mat-icon class="prompt-icon">touch_app</mat-icon>
+            <h3>Selecciona un Estilo de Arquitectura</h3>
+            <p>Haz clic en uno de los estilos de arriba para ver las tácticas recomendadas y comenzar a aplicar mejoras.</p>
+          </mat-card-content>
+        </mat-card>
+      </section>
+    }
+
+    @if (appliedTactics().length > 0) {
+      <section class="summary-section">
+        <h2 class="section-title">
+          <mat-icon>assessment</mat-icon>
+          Resumen de Tácticas Aplicadas
+        </h2>
+        <div class="applied-tactics-list">
+          @for (tactic of appliedTactics(); track tactic.id) {
+            <mat-chip class="applied-tactic-chip">
+              <mat-icon>check</mat-icon>
+              {{ tactic.name }}
+            </mat-chip>
+          }
+        </div>
+        <div class="impact-evaluation">
+          <button 
+            mat-raised-button 
+            color="accent"
+            routerLink="/tactics-application">
+            <mat-icon>analytics</mat-icon>
+            Evaluar Impacto
+          </button>
+        </div>
+      </section>
+    }
+  }
+</div>

@@ -1,0 +1,96 @@
+<div class="tactic-card" [class.applied]="applied" [class.not-applied]="!applied">
+  <mat-card class="tactic-material-card">
+    <mat-card-header>
+      <div mat-card-avatar class="tactic-avatar" [style.background-color]="getCategoryColor()">
+        <mat-icon>{{ getTacticIcon() }}</mat-icon>
+      </div>
+      <mat-card-title>{{ tactic?.name || 'Táctica sin nombre' }}</mat-card-title>
+      <mat-card-subtitle>
+        <mat-chip-set>
+          <mat-chip [style.background-color]="getCategoryColor()" [style.color]="'white'">
+            {{ tactic?.category || 'Categoría no especificada' }}
+          </mat-chip>
+        </mat-chip-set>
+      </mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <p class="tactic-description">{{ tactic?.description || 'Descripción no disponible' }}</p>
+
+      <div class="tactic-metadata">
+        <div class="metadata-item">
+          <mat-icon>signal_cellular_alt</mat-icon>
+          <span class="metadata-label">Complejidad:</span>
+          <span class="metadata-value">{{ getComplexityLevel() }}</span>
+        </div>
+        <div class="metadata-item" *ngIf="tactic?.estimatedEffort">
+          <mat-icon>schedule</mat-icon>
+          <span class="metadata-label">Esfuerzo:</span>
+          <span class="metadata-value">{{ tactic?.estimatedEffort }}</span>
+        </div>
+      </div>
+
+      <div class="impact-evaluation" *ngIf="impactScore > 0 || applied">
+        <h4>Evaluación de Impacto</h4>
+        <div class="impact-header">
+          <span class="impact-label">{{ getImpactLabel() }}</span>
+          <span class="impact-score">{{ impactScore }}%</span>
+        </div>
+        <mat-progress-bar 
+          mode="determinate" 
+          [value]="impactScore"
+          [color]="impactScore >= 50 ? 'primary' : 'accent'">
+        </mat-progress-bar>
+      </div>
+
+      <div class="implementation-progress" *ngIf="tactic?.implementationSteps && tactic?.implementationSteps?.length > 0">
+        <h4>Progreso de Implementación</h4>
+        <mat-progress-bar 
+          mode="determinate" 
+          [value]="trackImplementationProgress()">
+        </mat-progress-bar>
+        <span class="progress-label">
+          {{ tactic?.implementationSteps?.filter(s => s.completed)?.length || 0 }} / {{ tactic?.implementationSteps?.length }} pasos completados
+        </span>
+      </div>
+
+      <div class="benefits-section" *ngIf="tactic?.benefits && tactic?.benefits?.length > 0">
+        <h5><mat-icon>check_circle</mat-icon> Beneficios Esperados</h5>
+        <ul>
+          <li *ngFor="let benefit of tactic?.benefits">{{ benefit }}</li>
+        </ul>
+      </div>
+
+      <div class="considerations-section" *ngIf="tactic?.considerations && tactic?.considerations?.length > 0">
+        <h5><mat-icon>warning</mat-icon> Consideraciones</h5>
+        <ul>
+          <li *ngFor="let consideration of tactic?.considerations">{{ consideration }}</li>
+        </ul>
+      </div>
+
+      <div class="related-styles" *ngIf="tactic?.relatedStyles && tactic?.relatedStyles?.length > 0">
+        <h5><mat-icon>account_tree</mat-icon> Estilos Relacionados</h5>
+        <mat-chip-set>
+          <mat-chip *ngFor="let style of tactic?.relatedStyles">
+            {{ style }}
+          </mat-chip>
+        </mat-chip-set>
+      </div>
+    </mat-card-content>
+
+    <mat-card-actions align="end">
+      <button 
+        mat-raised-button 
+        [color]="applied ? 'warn' : 'primary'" 
+        (click)="onApplyTactic()"
+        [disabled]="applied">
+        <mat-icon>{{ applied ? 'check' : 'add' }}</mat-icon>
+        {{ applied ? 'Aplicada' : 'Aplicar' }}
+      </button>
+      <button mat-button (click)="onShowDetails()">
+        <mat-icon>info</mat-icon>
+        Detalles
+      </button>
+    </mat-card-actions>
+  </mat-card>
+</div>

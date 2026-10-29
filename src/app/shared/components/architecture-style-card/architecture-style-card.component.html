@@ -1,0 +1,73 @@
+<div class="architecture-style-card" [class.selected]="selected" [class.suitable-for-cloud]="style?.isSuitableForCloud('general')">
+  <mat-card class="style-card">
+    <mat-card-header>
+      <div mat-card-avatar class="style-avatar" [style.background-color]="getAvatarColor()">
+        <mat-icon>{{ getStyleIcon() }}</mat-icon>
+      </div>
+      <mat-card-title>{{ style?.name || 'Sin nombre' }}</mat-card-title>
+      <mat-card-subtitle>{{ style?.category || 'Categoría no especificada' }}</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <p class="style-description">{{ style?.description || 'Descripción no disponible' }}</p>
+
+      <div class="style-metrics" *ngIf="style?.metrics">
+        <h4>Métricas del Estilo</h4>
+        <div class="metric-item">
+          <span class="metric-label">Escalabilidad:</span>
+          <span class="metric-value">{{ style?.metrics?.scalability || 'N/A' }}</span>
+        </div>
+        <div class="metric-item">
+          <span class="metric-label">Disponibilidad:</span>
+          <span class="metric-value">{{ style?.metrics?.availability || 'N/A' }}</span>
+        </div>
+        <div class="metric-item">
+          <span class="metric-label">Complejidad:</span>
+          <span class="metric-value">{{ style?.metrics?.complexity || 'N/A' }}</span>
+        </div>
+      </div>
+
+      <div class="cloud-suitability" *ngIf="style?.isSuitableForCloud">
+        <mat-chip-set>
+          <mat-chip [class.cloud-friendly]="style.isSuitableForCloud('cloud-native')" [class.cloud-partial]="style.isSuitableForCloud('hybrid')">
+            <mat-icon>{{ style.isSuitableForCloud('cloud-native') ? 'cloud_done' : style.isSuitableForCloud('hybrid') ? 'cloud_sync' : 'cloud_off' }}</mat-icon>
+            {{ getCloudSuitabilityLabel() }}
+          </mat-chip>
+        </mat-chip-set>
+      </div>
+
+      <div class="use-cases" *ngIf="style?.useCases && style?.useCases?.length > 0">
+        <h4>Casos de Uso Recomendados</h4>
+        <ul>
+          <li *ngFor="let useCase of style?.useCases">{{ useCase }}</li>
+        </ul>
+      </div>
+
+      <div class="pros-cons" *ngIf="style?.pros || style?.cons">
+        <div class="pros" *ngIf="style?.pros && style?.pros?.length > 0">
+          <h5><mat-icon>thumb_up</mat-icon> Ventajas</h5>
+          <ul>
+            <li *ngFor="let pro of style?.pros">{{ pro }}</li>
+          </ul>
+        </div>
+        <div class="cons" *ngIf="style?.cons && style?.cons?.length > 0">
+          <h5><mat-icon>thumb_down</mat-icon> Desventajas</h5>
+          <ul>
+            <li *ngFor="let con of style?.cons">{{ con }}</li>
+          </ul>
+        </div>
+      </div>
+    </mat-card-content>
+
+    <mat-card-actions align="end">
+      <button mat-button color="primary" (click)="onSelect()" [disabled]="selected">
+        <mat-icon>check_circle</mat-icon>
+        Seleccionar
+      </button>
+      <button mat-button (click)="onDetails()">
+        <mat-icon>info</mat-icon>
+        Detalles
+      </button>
+    </mat-card-actions>
+  </mat-card>
+</div>

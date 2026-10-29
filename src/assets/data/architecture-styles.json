@@ -1,0 +1,262 @@
+{
+  "architectureStyles": [
+    {
+      "id": "monolithic",
+      "name": "Arquitectura Monolítica",
+      "description": "Aplicación única y autocontenida donde todos los componentes están desplegados y ejecutan dentro de un mismo proceso.",
+      "characteristics": [
+        "Código fuente unificado",
+        "Despliegue como unidad única",
+        "Base de datos compartida",
+        "Acoplamiento fuerte entre componentes"
+      ],
+      "pros": [
+        "Simplicidad en desarrollo inicial",
+        "Fácil depuración y testing",
+        "Menor complejidad operativa",
+        "Transacciones ACID fáciles de implementar"
+      ],
+      "cons": [
+        "Difícil de escalar horizontalmente",
+        "Acoplamiento dificulta mantenibilidad",
+        "Cualquier cambio requiere redepliegue completo",
+        "Punto único de fallo"
+      ],
+      "cloudSuitability": {
+        "score": 3,
+        "reason": "Limited cloud-native benefits, but can be deployed using containers"
+      },
+      "bestFor": ["Pequeños equipos", "MVP", "Aplicaciones con业务流程 simples"],
+      "technologyStack": ["Spring Boot", ".NET Core", "Node.js", "Django"],
+      "costEstimate": "Medium",
+      "complexity": "Low"
+    },
+    {
+      "id": "microservices",
+      "name": "Arquitectura de Microservicios",
+      "description": "Estilo arquitectónico que estructura una aplicación como un conjunto de servicios pequeños, autónomos y desplegables de forma independiente.",
+      "characteristics": [
+        "Servicios débilmente acoplados",
+        "Base de datos por servicio",
+        "Comunicación mediante APIs",
+        "Despliegue independiente",
+        "Organización alrededor de capacidades de negocio"
+      ],
+      "pros": [
+        "Escalabilidad independiente por servicio",
+        "Tecnologías heterogéneas por servicio",
+        "Despliegue independiente",
+        "Resistencia a fallos",
+        "Equipos pequeños y autónomos"
+      ],
+      "cons": [
+        "Complejidad en operaciones",
+        "Gestión de datos distribuidos",
+        "Latencia de red entre servicios",
+        "Dificultad en debugging distribuido",
+        "Mayor overhead en desarrollo inicial"
+      ],
+      "cloudSuitability": {
+        "score": 10,
+        "reason": "Ideal for cloud-native development, supports auto-scaling and container orchestration"
+      },
+      "bestFor": ["Grandes equipos", "Aplicaciones con múltiples dominios", "Alta disponibilidad requerida"],
+      "technologyStack": ["Docker", "Kubernetes", "Spring Cloud", "AWS Lambda", "Azure Functions"],
+      "costEstimate": "High",
+      "complexity": "High"
+    },
+    {
+      "id": "serverless",
+      "name": "Arquitectura Serverless",
+      "description": "Modelo de ejecución donde el proveedor de nube gestiona la infraestructura, permitiendo a los desarrolladores enfocarse exclusivamente en el código.",
+      "characteristics": [
+        "No gestión de servidores",
+        "Ejecución bajo demanda",
+        "Escalado automático",
+        "Pago por uso",
+        "Funciones como unidad de despliegue"
+      ],
+      "pros": [
+        "Reducción de costos operativos",
+        "Escalado automático instantáneo",
+        "Mayor productividad",
+        "Alta disponibilidad integrada"
+      ],
+      "cons": [
+        "Vendor lock-in",
+        "Cold starts",
+        "Limitaciones en tiempo de ejecución",
+        "Dificultad en debugging",
+        "Costos impredecibles a gran escala"
+      ],
+      "cloudSuitability": {
+        "score": 10,
+        "reason": "Fully cloud-native, eliminates infrastructure management entirely"
+      },
+      "bestFor": ["Procesamiento de eventos", "APIs con tráfico variable", "Procesamiento asíncrono"],
+      "technologyStack": ["AWS Lambda", "Azure Functions", "Google Cloud Functions", "Cloudflare Workers"],
+      "costEstimate": "Low to High",
+      "complexity": "Medium"
+    },
+    {
+      "id": "event-driven",
+      "name": "Arquitectura Orientada a Eventos",
+      "description": "Patrón arquitectónico donde los componentes reaccionan a eventos asíncronos, desacoplando productores y consumidores de eventos.",
+      "characteristics": [
+        "Comunicación asíncrona",
+        "Productores y consumidores independientes",
+        "Message brokers",
+        "Event sourcing opcional",
+        "Procesamiento en tiempo real"
+      ],
+      "pros": [
+        "Bajo acoplamiento",
+        "Escalabilidad horizontal",
+        "Resiliencia",
+        "Tiempo real",
+        "Auditoría mediante event log"
+      ],
+      "cons": [
+        "Complejidad en gestión de eventos",
+        "Garantía de entrega",
+        "Dificultad en testing",
+        "Ordenamiento de eventos",
+        "Debugging complejo"
+      ],
+      "cloudSuitability": {
+        "score": 9,
+        "reason": "Excellent fit for cloud messaging services and event processing"
+      },
+      "bestFor": ["Procesamiento en tiempo real", "Sistemas de notificación", "Integración de servicios"],
+      "technologyStack": ["Apache Kafka", "AWS SQS", "Azure Event Hub", "RabbitMQ", "Google Pub/Sub"],
+      "costEstimate": "Medium to High",
+      "complexity": "Medium to High"
+    },
+    {
+      "id": "layered",
+      "name": "Arquitectura por Capas",
+      "description": "Patrón tradicional que organiza la aplicación en capas lógicas con responsabilidades específicas y dependencias unidireccionales.",
+      "characteristics": [
+        "Separación de responsabilidades",
+        "Dependencia unidireccional",
+        "Capa de presentación",
+        "Capa de negocio",
+        "Capa de datos"
+      ],
+      "pros": [
+        "Claridad en estructura",
+        "Mantenibilidad",
+        "Testabilidad",
+        "Separación de Concerns"
+      ],
+      "cons": [
+        "Acoplamiento accidental entre capas",
+        "Performance por indirección",
+        "No óptimo para sistemas distribuidos"
+      ],
+      "cloudSuitability": {
+        "score": 5,
+        "reason": "Can be deployed to cloud but doesn't leverage cloud-native patterns"
+      },
+      "bestFor": ["Aplicaciones empresariales", "Sistemas con reglas de negocio complejas"],
+      "technologyStack": ["Java EE", "ASP.NET MVC", "Express.js", "Laravel"],
+      "costEstimate": "Low to Medium",
+      "complexity": "Low"
+    },
+    {
+      "id": "hexagonal",
+      "name": "Arquitectura Hexagonal",
+      "description": "Patrón que aísla el núcleo de negocio mediante puertos y adaptadores, permitiendo reemplazo de componentes externos sin modificar la lógica de dominio.",
+      "characteristics": [
+        "Dominio centrado",
+        "Puertos de entrada y salida",
+        "Adaptadores intercambiables",
+        "Alta testabilidad",
+        "Independencia de frameworks"
+      ],
+      "pros": [
+        "Flexibilidad en tecnología",
+        "Testabilidad del dominio",
+        "Independencia de infraestructura",
+        "Facilita migración"
+      ],
+      "cons": [
+        "Curva de aprendizaje",
+        "Sobreingeniería para proyectos pequeños",
+        "Complejidad inicial"
+      ],
+      "cloudSuitability": {
+        "score": 8,
+        "reason": "Excellent for cloud migration and multi-cloud strategies"
+      },
+      "bestFor": ["Aplicaciones con evolución esperada", "Multi-cloud", "DDD projects"],
+      "technologyStack": ["Any framework with DI", "Ports & Adapters pattern"],
+      "costEstimate": "Medium",
+      "complexity": "Medium"
+    },
+    {
+      "id": "cqrs",
+      "name": "CQRS (Command Query Responsibility Segregation)",
+      "description": "Patrón que separa las operaciones de lectura y escritura en modelos distintos, optimizando cada operación independientemente.",
+      "characteristics": [
+        "Modelos separados para lectura y escritura",
+        "Comandos para mutaciones",
+        "Queries para lecturas",
+        "Eventual consistency",
+        "Proyección de datos"
+      ],
+      "pros": [
+        "Optimización de lecturas y escrituras",
+        "Escalabilidad independiente",
+        "Modelos específicos por caso de uso",
+        "Facilita auditoría"
+      ],
+      "cons": [
+        "Complejidad en sincronización",
+        "Consistencia eventual",
+        "Curva de aprendizaje",
+        "Overhead para casos simples"
+      ],
+      "cloudSuitability": {
+        "score": 9,
+        "reason": "Great for cloud databases and event-driven systems"
+      },
+      "bestFor": ["Sistemas con alta carga de lectura", "DDD projects", "Event sourcing"],
+      "technologyStack": ["EventStoreDB", "MongoDB", "DynamoDB", "Azure Cosmos DB"],
+      "costEstimate": "High",
+      "complexity": "High"
+    },
+    {
+      "id": "mesh",
+      "name": "Service Mesh",
+      "description": "Infraestructura dedicada que maneja la comunicación entre servicios, proporcionando características como observabilidad, seguridad y tráfico management.",
+      "characteristics": [
+        "Sidecar proxies",
+        "Control plane separado",
+        "mTLS automático",
+        "Traffic splitting",
+        "Observabilidad granular"
+      ],
+      "pros": [
+        "Desacoplamiento de lógica de red",
+        "Seguridad zero-trust",
+        "Control de tráfico avanzado",
+        "Observabilidad completa"
+      ],
+      "cons": [
+        "Complejidad operativa",
+        "Overhead de recursos",
+        "Curva de aprendizaje",
+        "Latencia adicional"
+      ],
+      "cloudSuitability": {
+        "score": 10,
+        "reason": "Native to Kubernetes and cloud-native ecosystems"
+      },
+      "bestFor": ["Microservices en producción", "Alta seguridad", "Multi-cluster"],
+      "technologyStack": ["Istio", "Linkerd", "Envoy", "Consul Connect"],
+      "costEstimate": "High",
+      "complexity": "High"
+    }
+  ]
+}

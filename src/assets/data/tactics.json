@@ -1,0 +1,364 @@
+{
+  "tactics": [
+    {
+      "id": "auto-scaling",
+      "name": "Auto-escalamiento",
+      "description": "Táctica que ajusta automáticamente la capacidad de cómputo basándose en métricas de demanda como uso de CPU, memoria o solicitudes entrantes.",
+      "category": "escalabilidad",
+      "impact": {
+        "scalability": 10,
+        "availability": 8,
+        "performance": 7,
+        "cost": -3
+      },
+      "implementation": {
+        "cloudServices": [
+          "AWS Auto Scaling Groups",
+          "Azure Virtual Machine Scale Sets",
+          "GCP Managed Instance Groups"
+        ],
+        "kubernetes": "Horizontal Pod Autoscaler (HPA)",
+        "configuration": {
+          "metrics": ["CPU", "Memory", "Custom metrics"],
+          "minReplicas": 2,
+          "maxReplicas": 20,
+          "targetCpuUtilization": 70
+        }
+      },
+      "bestPractices": [
+        "Definir métricas relevantes para el negocio",
+        "Configurar warm-up periods",
+        "Establecer límites máximos razonables",
+        "Monitorizar costs en tiempo real"
+      ],
+      "commonPitfalls": [
+        "Escalar demasiado agresivo",
+        "No considerar costos",
+        "Métricas mal configuradas",
+        "Cold starts no manejados"
+      ],
+      "costConsideration": "Auto-escalamiento puede reducir costos al escalar hacia abajo en périodes de baja demanda, pero escalar excesivamente puede incrementar costos"
+    },
+    {
+      "id": "circuit-breaker",
+      "name": "Circuit Breaker",
+      "description": "Patrón de resiliencia que previene fallos en cascada al detectar falhas excesivas y abrir el circuito, evitando llamadas a servicios no disponibles.",
+      "category": "resiliencia",
+      "impact": {
+        "scalability": 2,
+        "availability": 10,
+        "performance": 5,
+        "cost": 1
+      },
+      "implementation": {
+        "libraries": [
+          "Resilience4j",
+          "Polly (.NET)",
+          "Hystrix (deprecated)",
+          "Envoy proxy"
+        ],
+        "cloudServices": [
+          "AWS API Gateway throttling",
+          "Azure Circuit Breaker pattern"
+        ],
+        "states": {
+          "closed": "Operación normal, todas las llamadas pasan",
+          "open": "Fallo detectado, llamadas retornan inmediatamente sin ejecutar",
+          "half-open": "Prueba de recuperación, llamadas limitadas"
+        },
+        "configuration": {
+          "failureThreshold": 50,
+          "successThreshold": 2,
+          "timeout": 60000
+        }
+      },
+      "bestPractices": [
+        "Definir tiempos de recuperación apropiados",
+        "Implementar fallback strategies",
+        "Monitorear estado del circuit breaker",
+        "Configurar thresholds por servicio"
+      ],
+      "commonPitfalls": [
+        "Thresholds muy agresivos",
+        "No implementar fallback",
+        "No monitorizar cambios de estado",
+        "Timeouts demasiado largos"
+      ],
+      "costConsideration": "Reduce costos al evitar llamadas innecesarias a servicios caídos y prevenir facturación por retries fallidos"
+    },
+    {
+      "id": "load-balancing",
+      "name": "Balanceo de Carga",
+      "description": "Técnica que distribuye el tráfico entrante entre múltiples instancias de aplicación para optimizar el uso de recursos y maximizar disponibilidad.",
+      "category": "escalabilidad",
+      "impact": {
+        "scalability": 9,
+        "availability": 9,
+        "performance": 8,
+        "cost": 2
+      },
+      "application": "multi-region",
+      "implementation": {
+        "cloudServices": [
+          "AWS ALB/NLB",
+          "Azure Load Balancer",
+          "GCP Cloud Load Balancing"
+        ],
+        "kubernetes": "Ingress Controller, Service",
+        "algorithms": [
+          "Round Robin",
+          "Least Connections",
+          "Weighted",
+          "IP Hash",
+          "Least Response Time"
+        ],
+        "healthChecks": {
+          "interval": 10,
+          "timeout": 5,
+          "unhealthyThreshold": 3,
+          "healthyThreshold": 2
+        }
+      },
+      "bestPractices": [
+        "Implementar health checks efectivos",
+        "Usar sticky sessions cuando sea necesario",
+        "Configurar SSL termination",
+        "Habilitar connection draining"
+      ],
+      "commonPitfalls": [
+        "Health checks mal configurados",
+        "No considerar stateful services",
+        "Single point of failure en el balanceador",
+        "No probar failover"
+      ],
+      "costConsideration": "Balanceadores managed tienen costo por hora y por GB procesado, pero permiten optimizar uso de instancias reduciendo costos totales"
+    },
+    {
+      "id": "caching",
+      "name": "Caché",
+      "description": "Estrategia de almacenamiento temporal de datos frecuentemente accedidos para reducir latencia y carga en sistemas backend.",
+      "category": "rendimiento",
+      "impact": {
+        "scalability": 6,
+        "availability": 3,
+        "performance": 10,
+        "cost": -4
+      },
+      "implementation": {
+        "layers": [
+          "CDN (Edge caching)",
+          "Application cache (In-memory)",
+          "Distributed cache (Redis, Memcached)",
+          "Database query cache"
+        ],
+        "cloudServices": [
+          "Amazon CloudFront",
+          "Azure CDN",
+          "Google Cloud CDN",
+          "Amazon ElastiCache",
+          "Azure Cache for Redis"
+        ],
+        "strategies": [
+          "Cache-aside",
+          "Write-through",
+          "Write-behind",
+          "Refresh-ahead"
+        ],
+        "configuration": {
+          "ttl": 3600,
+          "maxSize": "2GB",
+          "evictionPolicy": "LRU"
+        }
+      },
+      "bestPractices": [
+        "Definir TTL apropiados por tipo de dato",
+        "Implementar cache invalidation",
+        "Usar cache para datos estáticos",
+        "Monitorizar hit rate"
+      ],
+      "commonPitfalls": [
+        "Datos stale en cache",
+        "Cache invalidation compleja",
+        "Cold cache problems",
+        "Memory pressure"
+      ],
+      "costConsideration": "Reduce costos significativamente al reducir carga en bases de datos y APIs, aunque añade costo de infraestructura de cache"
+    },
+    {
+      "id": "multi-region",
+      "name": "Arquitectura Multi-Región",
+      "description": "Despliegue de aplicaciones en múltiples regiones geográficas para mejorar latencia y disponibilidad ante fallos regionales.",
+      "category": "disponibilidad",
+      "impact": {
+        "scalability": 7,
+        "availability": 10,
+        "performance": 8,
+        "cost": 8
+      },
+      "implementation": {
+        "patterns": [
+          "Active-Active",
+          "Active-Passive",
+          "Geographical routing"
+        ],
+        "cloudServices": [
+          "AWS Global Accelerator",
+          "Azure Traffic Manager",
+          "Cloud DNS",
+          "Amazon Route 53"
+        ],
+        "dataReplication": {
+          "sync": "Synchronous for critical data",
+          "async": "Asynchronous for eventual consistency",
+          " CDC": "Change Data Capture for databases"
+        }
+      },
+      "bestPractices": [
+        "Seleccionar regiones con baja latencia",
+        "Implementar failover automatizado",
+        "Considerar regulaciones de datos",
+        "Testear failover regularmente"
+      ],
+      "commonPitfalls": [
+        "Costos de transferencia de datos",
+        "Consistencia de datos",
+        "Complejidad operacional",
+        "Latencia de replicación"
+      ],
+      "costConsideration": "Alto costo por replicación de datos y múltiples instancias, pero puede reducir pérdida de negocio por outages"
+    },
+    {
+      "id": "graceful-degradation",
+      "name": "Degradación Elegante",
+      "description": "Estrategia que permite a la aplicación mantener funcionalidad parcial cuando algunos componentes no están disponibles.",
+      "category": "resiliencia",
+      "impact": {
+        "scalability": 2,
+        "availability": 9,
+        "performance": 3,
+        "cost": -1
+      },
+      "implementation": {
+        "approaches": [
+          "Feature flags",
+          "Fallback responses",
+          "Default values",
+          "Circuit breaker integration"
+        ],
+        "patterns": [
+          "Bulkhead",
+          "Fallback",
+          "Timeout"
+        ],
+        "implementationExamples": {
+          "payment": "Allow offline payments with sync later",
+          "recommendations": "Show cached recommendations",
+          "search": "Show popular searches when index unavailable"
+        }
+      },
+      "bestPractices": [
+        "Identificar funcionalidades críticas vs nice-to-have",
+        "Proveer feedback claro al usuario",
+        "Monitorear features degradadas",
+        "Implementar recovery automático"
+      ],
+      "commonPitfalls": [
+        "No definir comportamiento degradado",
+        "Usar defaults incorrectos",
+        "No testear escenarios de degradación",
+        "Confundir degradación con fallo"
+      ],
+      "costConsideration": "Reduce costos al evitar fallos en cascada y mantener ingresos mediante funcionalidad parcial"
+    },
+    {
+      "id": "async-messaging",
+      "name": "Mensajería Asíncrona",
+      "description": "Patrón de comunicación que desacopla productores y consumidores mediante colas de mensajes, permitiendo procesamiento asíncrono y resiliencia.",
+      "category": "integracion",
+      "impact": {
+        "scalability": 8,
+        "availability": 8,
+        "performance": 6,
+        "cost": 2
+      },
+      "implementation": {
+        "messageBrokers": [
+          "Apache Kafka",
+          "RabbitMQ",
+          "AWS SQS",
+          "Azure Service Bus",
+          "Google Pub/Sub"
+        ],
+        "patterns": [
+          "Point-to-point",
+          "Publish-Subscribe",
+          "Message routing",
+          "Dead letter queue"
+        ],
+        "guarantees": {
+          "at-least-once": "Default for most use cases",
+          "exactly-once": "Requires idempotent consumers",
+          "at-most-once": "For non-critical notifications"
+        }
+      },
+      "bestPractices": [
+        "Diseñar mensajes idempotentes",
+        "Implementar dead letter queues",
+        "Monitorear queue depth",
+        "Usar message batching para alto throughput"
+      ],
+      "commonPitfalls": [
+        "Mensajes duplicados",
+        "Ordenamiento no garantizado",
+        "Message loss",
+        "Complex error handling"
+      ],
+      "costConsideration": "Costo variable según proveedor y volumen de mensajes, pero puede reducir costos de infraestructura por procesamiento batch"
+    },
+    {
+      "id": "infrastructure-as-code",
+      "name": "Infraestructura como Código",
+      "description": "Práctica de gestionar y aprovisionar infraestructura mediante código versionado, permitiendo reproducibilidad y automatización.",
+      "category": "operaciones",
+      "impact": {
+        "scalability": 5,
+        "availability": 6,
+        "performance": 4,
+        "cost": -5
+      },
+      "implementation": {
+        "tools": [
+          "Terraform",
+          "AWS CloudFormation",
+          "Azure Resource Manager",
+          "Pulumi",
+          "Ansible",
+          "AWS CDK"
+        ],
+        "practices": [
+          "Version control for infrastructure",
+          "Automated testing (Terratest)",
+          "Pipeline integration",
+          "State management"
+        ],
+        "modules": {
+          "reusability": "Use modules for common patterns",
+          "organization": "Separate environments (dev, staging, prod)"
+        }
+      },
+      "bestPractices": [
+        "Usar remote state con locking",
+        "Implementar review process para cambios",
+        "Mantener módulos pequeños y enfocados",
+        "Documentar variables y outputs"
+      ],
+      "commonPitfalls": [
+        "State drift",
+        "Secrets en código",
+        "No testing de cambios",
+        "State locking issues"
+      ],
+      "costConsideration": "Reduce costos operativos mediante automatización y previene costos de errores manuales"
+    }
+  ]
+}

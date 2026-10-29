@@ -1,0 +1,74 @@
+<div class="tactics-application-container">
+  <header class="page-header">
+    <h1>Aplicación de Tácticas de Arquitectura</h1>
+    <p class="subtitle">Seleccione un estilo de arquitectura y aplique tácticas para evaluar su impacto en escalabilidad y disponibilidad</p>
+  </header>
+
+  <section class="style-selection-section" *ngIf="!hasSelectedStyle()">
+    <h2>Seleccione un Estilo de Arquitectura</h2>
+    <div class="styles-grid">
+      <app-architecture-style-card
+        *ngFor="let style of getStyles()"
+        [styleData]="style"
+        [selected]="selectedStyleId === style.id"
+        (selectStyle)="onStyleSelect($event)">
+      </app-architecture-style-card>
+    </div>
+  </section>
+
+  <section class="tactics-section" *ngIf="hasSelectedStyle()">
+    <div class="selected-style-info">
+      <h2>Estilo Seleccionado: {{ selectedStyleSignal()?.name }}</h2>
+      <button class="btn-back" (click)="clearAllTactics(); selectedStyleId = null">
+        Cambiar Estilo
+      </button>
+    </div>
+
+    <div class="tactics-grid">
+      <div class="available-tactics">
+        <h3>Tácticas Disponibles</h3>
+        <p class="hint">Haga clic en las tácticas que desea aplicar</p>
+        <app-tactic-card
+          *ngFor="let tactic of getTactics()"
+          [tactic]="tactic"
+          [applied]="isTacticApplied(tactic.id)"
+          (toggleTactic)="onTacticToggle($event)">
+        </app-tactic-card>
+      </div>
+
+      <div class="applied-tactics">
+        <h3>Tácticas Aplicadas ({{ getAppliedTactics().length }})</h3>
+        <div *ngIf="getAppliedTactics().length === 0" class="empty-state">
+          <p>No hay tácticas aplicadas aún</p>
+        </div>
+        <app-tactic-card
+          *ngFor="let tactic of getAppliedTactics()"
+          [tactic]="tactic"
+          [applied]="true"
+          (toggleTactic)="onTacticToggle($event)">
+        </app-tactic-card>
+      </div>
+    </div>
+
+    <div class="impact-evaluation" *ngIf="getAppliedTactics().length > 0">
+      <h2>Evaluación de Impacto</h2>
+      <div class="score-cards">
+        <div class="score-card scalability">
+          <h3>Escalabilidad</h3>
+          <div class="score-value">{{ scalabilityScore() }}/100</div>
+          <div class="score-bar">
+            <div class="score-fill" [style.width.%]="scalabilityScore()"></div>
+          </div>
+        </div>
+        <div class="score-card availability">
+          <h3>Disponibilidad</h3>
+          <div class="score-value">{{ availabilityScore() }}/100</div>
+          <div class="score-bar">
+            <div class="score-fill" [style.width.%]="availabilityScore()"></div>
+          </div>
+        </div>
+      </div>
+      <p class="impact-summary">{{ getImpactSummary() }}</p>
+    </div>
+  </section>
+</div>
